@@ -3,7 +3,7 @@ name: Docker Image CI
 on:
   push:
     branches: [ "multi-arch-docker" ]
-  workflow_run:
+  workflow_dispatch:
 
 jobs:
   build:
