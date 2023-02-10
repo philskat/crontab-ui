@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install buildx
-      uses: crazy-max/ghaction-docker-build@v1
+      uses: crazy-max/ghaction-docker-buildx@v1
       with:
         version: latest
     - name: Login to GH-Container registry
