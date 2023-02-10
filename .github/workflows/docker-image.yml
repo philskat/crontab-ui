@@ -14,14 +14,10 @@ jobs:
       uses: crazy-max/ghaction-docker-buildx@v1
       with:
         version: latest
-    - name: Login to GH-Container registry
-      uses: docker/login-action@v2.1.0
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Login to Github registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
     - name: Build the Docker image
       run: |
         docker buildx build --push \
-             --tag ghcr.io/philskat/crontab-ui:latest \
+             --tag ghcr.io/${{ github.repository }} \
              --platform linux/arm64,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 .
