@@ -21,6 +21,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
-      run: docker buildx build --push \
-             --tag philskat/crontab-ui:latest
+      run: |
+        docker buildx build --push \
+             --tag philskat/crontab-ui:latest \
              --platform linux/arm64,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 .
