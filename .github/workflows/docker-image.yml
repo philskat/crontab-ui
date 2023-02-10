@@ -23,5 +23,5 @@ jobs:
     - name: Build the Docker image
       run: |
         docker buildx build --push \
-             --tag philskat/crontab-ui:latest \
+             --tag ghcr.io/philskat/crontab-ui:latest \
              --platform linux/arm64,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 .
