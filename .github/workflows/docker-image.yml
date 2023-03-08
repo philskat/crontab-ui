@@ -1,27 +1,38 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "multi-arch-docker" ]
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
     - name: Install buildx
-      uses: crazy-max/ghaction-docker-buildx@v1
-      with:
-        version: latest
+      uses: docker/setup-buildx-action@v2
     - name: Login to Github registry
-      uses: docker/login-action@v2.1.0
+      uses: docker/login-action@v2
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build the Docker image
-      run: |
-        docker buildx build --push \
-             --tag ghcr.io/${{ github.repository }} \
-             --platform linux/arm64,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 .
+    - name: Get Metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/${{ github.repository }}
+        labels: |
+          org.opencontainers.image.title=crontab-ui
+          org.opencontainers.image.description=Edit crontab through a browser ui
+          org.opencontainers.image.vendor=alseambusher
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ step.meta.outputs.labels }}
